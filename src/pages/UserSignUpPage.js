@@ -1,6 +1,6 @@
 import React from "react";
 import { signup } from "../api/apiCalls";
-
+import Input from "../components/input";
 class UserSignUpPage extends React.Component{
 
     state = {//Comes from React.components
@@ -8,17 +8,23 @@ class UserSignUpPage extends React.Component{
         displayName: null,
         password: null,
         passwordRepeat: null,
-        pendingApiCall: false
+        pendingApiCall: false,
+        errors:{
+
+        }
     };
   
 
     onChange = event => {
         const { name, value} = event.target
+        const errors = { ...this.state.errors};
+        errors[name] = undefined;
         // Shorthand 
         //const value = event.target.value;
         //const nameField = event.target.name;
         this.setState({
-            [name]: value
+            [name]: value,
+            errors
         })
     }
     
@@ -38,35 +44,29 @@ class UserSignUpPage extends React.Component{
         
         try{
             const response = await signup(body);
-        }catch (error){ }
+        }catch (error){
+            if (error.response.data.validationErrors)// we dont want to set errors to null
+                this.setState({errors: error.response.data.validationErrors});
+        }
         this.setState({pendingApiCall: false});
-
+    }
         // We used then and catch because we need to wait for asyn response than wait for the result
         // signup(body).then(responce =>{
         //     this.setState({pendingApiCall: false});
         // }).catch(error => {
         //     this.setState({pendingApiCall: false});
         // });
-    }
 
     render(){
-        const { pendingApiCall } = this.state;// we dont want to use this.state.pendingApiCall everytime
+        const { pendingApiCall, errors } = this.state;// we dont want to use this.state.pendingApiCall everytime
+        const { username, displayName, password} = errors;
         return(
         <div className = "container">
-            <form>
+            <form className="needs-validation">
                 <h1 className="text-center">Sign Up Page</h1>
-                <div className="form-group">
-                    <label className="form-label">Username</label>
-                    <input name="username" className="form-control" onChange={this.onChange}/>
-                </div>
-                <div className="form-group">
-                    <label className="form-label">Display Name</label>
-                    <input name="displayName" className="form-control" onChange={this.onChange}/>
-                </div>
-                <div className="form-group">
-                    <label className="form-label">Password</label>
-                    <input name="password"type="password" className="form-control" onChange={this.onChange}/>
-                </div>
+                <Input name="username" label="Username" error={username} onChange={this.onChange}/>
+                <Input name="displayName" label="Display Name" error={displayName} onChange={this.onChange}/>
+                <Input name="password" label="Password" error={password} onChange={this.onChange} type="password"/>
                 <div className="form-group">
                     <label className="form-label">Password Repeat</label>
                     <input name="passwordRepeat" className="form-control" type="password" onChange={this.onChange}/>
