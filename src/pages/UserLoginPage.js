@@ -2,6 +2,8 @@ import React from "react";
 import Input from "../components/input";
 import { login } from "../api/apiCalls";
 import axios  from "axios";
+import buttonWithProgres from "../components/buttonWithProgress";
+import ButtonWithProgress from "../components/buttonWithProgress";
 
 class LoginPage extends React.Component {
 
@@ -65,11 +67,7 @@ class LoginPage extends React.Component {
                     <Input name="password" label="Password" onChange={this.onChange} type="password"/>
                     {error && <div className="alert alert-danger">{error}</div>}
                     <div className="spacer5"></div>
-                    <div className="text-center">
-                        <button className="btn btn-secondary" onClick={this.onClickLogin} disabled={!buttonEnabled || pendingApiCall}>
-                            Login
-                        </button>
-                    </div>
+                    <ButtonWithProgress onClick={this.onClickLogin} disabled={!buttonEnabled || pendingApiCall} pendingApiCall={pendingApiCall} text={"Login"}/>
                 </form>
             </div>
         );

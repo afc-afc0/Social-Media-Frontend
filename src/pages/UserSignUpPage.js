@@ -1,5 +1,6 @@
 import React from "react";
 import { signup } from "../api/apiCalls";
+import ButtonWithProgress from "../components/buttonWithProgress";
 import Input from "../components/input";
 class UserSignUpPage extends React.Component{
 
@@ -68,11 +69,7 @@ class UserSignUpPage extends React.Component{
                 <Input name="password" label="Password" error={password} onChange={this.onChange} type="password"/>
                 <Input name="passwordRepeat" label="Password Repeat" error={passwordRepeat} onChange={this.onChange} type="password"/>
                 <div className="spacer5"></div>
-                <div className="text-center">
-                    <button className="btn btn-secondary" onClick={this.onClickSignUp} disabled={pendingApiCall || passwordRepeat !== undefined}>
-                    {pendingApiCall && <span className="spinner-border spinner-border-sm"></span>} Sign Up 
-                    </button>
-                </div>
+                <ButtonWithProgress onClick={this.onClickSignUp} disabled={pendingApiCall || passwordRepeat !== undefined} pendingApiCall={pendingApiCall} text={"Sign Up"}/>
             </form>
         </div>
         );
