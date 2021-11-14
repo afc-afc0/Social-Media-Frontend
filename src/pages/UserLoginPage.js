@@ -1,15 +1,31 @@
 import React from "react";
 import Input from "../components/input";
 import { login } from "../api/apiCalls";
+import axios  from "axios";
 
 class LoginPage extends React.Component {
 
     state = {
         username: null,
         password: null,
-        error: null
+        error: null,
+        pendingApiCall: false,
     };
 
+    componentDidMount() {
+        axios.interceptors.request.use((request) => {
+            this.setState({pendingApiCall:true})
+            return request;
+        });
+
+        axios.interceptors.response.use((response) => {
+            this.setState({pendingApiCall:false})
+            return response;
+        }, (error) => {
+            this.setState({pendingApiCall:false});
+            throw error;
+        });
+    }
 
     onChange = event => {
         const {name, value} = event.target;
@@ -39,7 +55,7 @@ class LoginPage extends React.Component {
     }
 
     render(){
-        const {username, password, error} = this.state;
+        const {username, password, error, pendingApiCall} = this.state;
         const buttonEnabled = username && password;
         return(
             <div className="container">
@@ -50,7 +66,7 @@ class LoginPage extends React.Component {
                     {error && <div className="alert alert-danger">{error}</div>}
                     <div className="spacer5"></div>
                     <div className="text-center">
-                        <button className="btn btn-secondary" onClick={this.onClickLogin} disabled={!buttonEnabled}>
+                        <button className="btn btn-secondary" onClick={this.onClickLogin} disabled={!buttonEnabled || pendingApiCall}>
                             Login
                         </button>
                     </div>
