@@ -75,5 +75,4 @@ class UserSignUpPage extends React.Component{
     }
 }
 
-const UserSignupPageWithApiProgress = withApiProgress(UserSignUpPage, "api/1.0/users");
-export default UserSignupPageWithApiProgress;
+export default withApiProgress(UserSignUpPage, "api/1.0/users");;
