@@ -2,6 +2,7 @@ import React from "react";
 import { signup } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import Input from "../components/input";
+import { withApiProgress } from "../shared/ApiProgress";
 class UserSignUpPage extends React.Component{
 
     state = {//Comes from React.components
@@ -9,7 +10,6 @@ class UserSignUpPage extends React.Component{
         displayName: null,
         password: null,
         passwordRepeat: null,
-        pendingApiCall: false,
         errors:{
 
         }
@@ -24,7 +24,7 @@ class UserSignUpPage extends React.Component{
         if (name === "password" || name === "passwordRepeat") 
             if (name === "password" && value !==  this.state.passwordRepeat)
                 errors.passwordRepeat = 'Password mismatch'
-            else if (name === "passwordRepeat" && value != this.state.password)
+            else if (name === "passwordRepeat" && value !== this.state.password)
                 errors.passwordRepeat = "Password mismatch";
             else
                 errors.passwordRepeat = undefined;
@@ -46,19 +46,18 @@ class UserSignUpPage extends React.Component{
             password,
         };
 
-        this.setState({pendingApiCall: true});
         
         try{
-            const response = await signup(body);
+            await signup(body);
         }catch (error){
             if (error.response.data.validationErrors)// we dont want to set errors to null
                 this.setState({errors: error.response.data.validationErrors});
         }
-        this.setState({pendingApiCall: false});
     }
 
     render(){
-        const { pendingApiCall, errors } = this.state;// we dont want to use this.state.pendingApiCall everytime
+        const { pendingApiCall} = this.props;
+        const { errors } = this.state;// we dont want to use this.state.pendingApiCall everytime
         const { username, displayName, password, passwordRepeat} = errors;
         return(
         <div className = "container">
@@ -76,4 +75,5 @@ class UserSignUpPage extends React.Component{
     }
 }
 
-export default UserSignUpPage;
+const UserSignupPageWithApiProgress = withApiProgress(UserSignUpPage, "api/1.0/users");
+export default UserSignupPageWithApiProgress;

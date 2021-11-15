@@ -1,16 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-//import App from './App';
 import './bootstrap-override.scss';
 import reportWebVitals from './reportWebVitals';
-//import UserSignUpPage from './pages/UserSignUpPage';
-import UserLoginPage from './pages/UserLoginPage';
+import App from './container/App';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <UserLoginPage />
-  </React.StrictMode>,
+  <App/>,
   document.getElementById('root')
 );
 

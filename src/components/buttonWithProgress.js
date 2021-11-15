@@ -1,4 +1,3 @@
-import react from "react"
 
 const ButtonWithProgress = (props) => {
     const {onClick, pendingApiCall, disabled, text} = props;
