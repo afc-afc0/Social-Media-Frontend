@@ -3,12 +3,14 @@ import UserSignUpPage from "../pages/UserSignUpPage";
 import LoginPage from "../pages/LoginPage";
 import HomePage from "../pages/HomePage"
 import UserPage from "../pages/UserPage";
-import {HashRouter, Route, Navigate, Routes} from 'react-router-dom';
+import TopBar from "../components/TopBar";
+import {HashRouter as Router, Route, Navigate, Routes} from 'react-router-dom';
 
 function App() {
   return (
     <div>
-      <HashRouter>
+      <Router>
+        <TopBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -16,7 +18,7 @@ function App() {
           <Route path="/user/:username" element={<UserPage/>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </HashRouter>
+      </Router>
     </div>
   );
 }
