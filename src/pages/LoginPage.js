@@ -2,7 +2,8 @@ import React from "react";
 import Input from "../components/input";
 import { login } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
-import { withApiProgress } from "../shared/ApiProgress";
+import {withApiProgress} from "../shared/ApiProgress";
+import { Navigate } from "react-router-dom";
 
 class LoginPage extends React.Component {
 
@@ -20,6 +21,8 @@ class LoginPage extends React.Component {
         })
     }
 
+
+
     onClickLogin = async event => {
         event.preventDefault();
         const {username, password} = this.state
@@ -27,14 +30,15 @@ class LoginPage extends React.Component {
             username: username,
             password: password
         }
+        
         this.setState({
             error:null
         })
         try {
             await login(creds);
         } catch(apiError){
-          this.setState({
-             error: apiError.response.data.message
+            this.setState({
+            error: apiError.response.data.message
           })
         }
     }
@@ -42,7 +46,9 @@ class LoginPage extends React.Component {
     render(){
         const {pendingApiCall} = this.props;
         const {username, password, error} = this.state;
+
         const buttonEnabled = username && password;
+        
         return(
             <div className="container">
                 <form className="needs-validation">
