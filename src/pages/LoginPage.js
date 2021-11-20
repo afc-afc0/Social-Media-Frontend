@@ -21,8 +21,6 @@ class LoginPage extends React.Component {
         })
     }
 
-
-
     onClickLogin = async event => {
         event.preventDefault();
         const {username, password} = this.state

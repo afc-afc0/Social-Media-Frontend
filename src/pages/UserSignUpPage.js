@@ -17,6 +17,9 @@ class UserSignUpPage extends React.Component{
   
 
     onChange = event => {
+
+        
+
         const { name, value} = event.target
         const errors = {...this.state.errors};
         errors[name] = undefined;
