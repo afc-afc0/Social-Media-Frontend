@@ -4,14 +4,8 @@ import { Link } from 'react-router-dom'
 
 class TopBar extends Component {
 
-    state = {
-        isLoggedIn: true,
-        username: 'Fatih'
-    }
-
-    
     render() {
-        const {isLoggedIn, username} = this.state;
+        const {isLoggedIn, username} = this.props;
     
         let links = (
             <ul className="navbar-nav ms-auto">
@@ -31,13 +25,13 @@ class TopBar extends Component {
         if (isLoggedIn) {
             links = (
             <ul className="navbar-nav ms-auto">
-                <li className="nav-link">
+                <li>
                     <Link className="nav-link" to={`/user/${username}`}>
                         {username}
                     </Link>
                 </li>
                 <li className="nav-link">
-                    Logout
+                    {"Logouts"}
                 </li>
             </ul>
             );
