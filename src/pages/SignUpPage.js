@@ -2,75 +2,79 @@ import React from "react";
 import { signup } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import Input from "../components/input";
-import { useInputs } from "../shared/useInputs";
-import { useState } from "react";
+import { useInput } from "../shared/useInput";
+import { useState, useEffect } from "react";
 import { withApiProgress } from "../shared/ApiProgress";
 
 const SignUpPage = (props) => {
 
-    const [{username, displayName, password, passwordRepeat}, setInput] = useState({username: "", displayName: "", password: "", passwordRepeat: ""});
-    const [errors, setErrors] = useState({});
+    const [ errors, setErrors] = useState({username:"", displayName:"", password:""});
+    const [ inputs, setInput] = useInput({username: "", displayName: "", password: "", passwordRepeat: ""});
 
-    useEffect(
-        () => {
 
-        }
-    }, [input])
+    useEffect ( () => {
+        resetErrors();
+    }, [inputs.username, inputs.displayName])
 
-    const onChangeInput = event => {
-        
-        console.log("Started setting input")
-        setInput(currentState => ({
-            ...currentState,
-            [event.target.name]: event.target.value
-        }));
+    useEffect ((errors) => {
 
-        console.log(`username = ${username}`);
-        console.log(`display name = ${displayName}`);
-        console.log(`password = ${password}`);
-        console.log(`password repeat = ${passwordRepeat}`);        
+        resetErrors();
 
-        const {name} = event.target
-        errors[name+"Error"] = undefined;
-
-        if (name === "password" || name === "passwordRepeat") 
-            if (name === "password" && password !==  passwordRepeat)
-                setErrors({passwordRepeatError:'Password mismatch'});
-            else if (name === "passwordRepeat" && passwordRepeat !== password)
-                setErrors({passwordRepeatError:"Password mismatch"});
-            else
-                setErrors({passwordRepeatError:undefined});
-    }
+        if (inputs.password !==  inputs.passwordRepeat)
+            setErrors ({
+                ...errors,
+                passwordRepeat:'Password mismatch'
+            });
+        else
+            setErrors({
+                ...errors,
+                passwordRepeat:undefined
+            });
+    }, [inputs.password, inputs.passwordRepeat])
     
+    const resetErrors = () => {
+        setErrors({
+            username : "",
+            displayName : "",
+            password : ""
+        })
+    }
+
     const onClickSignUp = async event =>{
-        event.preventDefault();//We block browser
+        event.preventDefault();
 
         const body = {
-            username: username,
-            displayName: displayName,
-            password: password
+            username: inputs.username,
+            displayName: inputs.displayName,
+            password: inputs.password
         };
 
         try{
             await signup(body);
+
         }catch (error){
-            if (error.response.data.validationErrors)
-                setErrors({errors: error.response.data.validationErrors});
+            if (error.response.data.validationErrors){
+                setErrors({
+                    username : error.response.data.validationErrors.username,
+                    displayName : error.response.data.validationErrors.displayName,
+                    password : error.response.data.validationErrors.password,
+                })
+            }
         }
     }
 
-    const { pendingApiCall } = false;
+    const { pendingApiCall } = props;
 
     return(
         <div className = "container">
             <form className="needs-validation">
                 <h1 className="text-center">Sign Up Page</h1>
-                <Input name="username" label="Username" value={username} error={errors.usernameError} onChange={onChangeInput}/>
-                <Input name="displayName" label="Display Name" value={displayName} error={errors.displayNameError} onChange={onChangeInput}/>
-                <Input name="password" label="Password" value={password}  error={errors.passwordError} onChange={onChangeInput} type="password"/>
-                <Input name="passwordRepeat" label="Password Repeat" value={passwordRepeat} error={errors.passwordRepeatError} onChange={onChangeInput} type="password"/>
+                <Input name="username" label="Username" value={inputs.username} error={errors.username} onChange={setInput}/>
+                <Input name="displayName" label="Display Name" value={inputs.displayName} error={errors.displayName} onChange={setInput}/>
+                <Input name="password" label="Password" value={inputs.password}  error={errors.password} onChange={setInput} type="password"/>
+                <Input name="passwordRepeat" label="Password Repeat" value={inputs.passwordRepeat} error={errors.passwordRepeat} onChange={setInput} type="password"/>
                 <div className="spacer5"></div>
-                <ButtonWithProgress onClick={onClickSignUp} disabled={pendingApiCall || errors.passwordRepeatError !== undefined} pendingApiCall={pendingApiCall} text={"Sign Up"}/>
+                <ButtonWithProgress onClick={onClickSignUp} disabled={pendingApiCall || errors.passwordRepeat !== undefined} pendingApiCall={pendingApiCall} text={"Sign Up"}/>
             </form>
         </div>
     );

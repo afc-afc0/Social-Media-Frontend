@@ -3,14 +3,16 @@ import Input from "../components/input";
 import { login } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import {withApiProgress} from "../shared/ApiProgress";
-import { Navigate } from "react-router-dom";
-import { useInputs } from "../shared/useInputs";
+import { useInput } from "../shared/useInput";
 import { useState} from 'react'
+import { useNavigate  } from 'react-router-dom';
 
 const LoginPage = (props) => {
 
-    const [values, handleChange] = useInputs({username: "", password: ""});
+    const [values, handleChange] = useInput({username: "", password: ""});
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
 
     const onClickLogin = async event => {
         event.preventDefault();
@@ -23,6 +25,7 @@ const LoginPage = (props) => {
         setError(null);
         try {
             await login(creds);
+            navigate("/", { replace: true });
         } catch(apiError){
             setError(apiError.response.data.message);
         }
