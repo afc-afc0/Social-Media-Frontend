@@ -3,7 +3,6 @@ import Input from "../components/input";
 import { login } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import {withApiProgress} from "../shared/ApiProgress";
-import { Navigate } from "react-router-dom";
 
 class LoginPage extends React.Component {
 

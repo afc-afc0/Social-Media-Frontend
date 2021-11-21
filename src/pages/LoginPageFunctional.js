@@ -13,7 +13,6 @@ const LoginPage = (props) => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-
     const onClickLogin = async event => {
         event.preventDefault();
 

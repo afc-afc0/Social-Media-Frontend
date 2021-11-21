@@ -1,10 +1,9 @@
-import React from "react";
 import { signup } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import Input from "../components/input";
 import { useInput } from "../shared/useInput";
 import { useState, useEffect } from "react";
-import { withApiProgress } from "../shared/ApiProgress";
+import { WithApiProgress } from "../shared/ApiProgressFunctional";
 
 const SignUpPage = (props) => {
 
@@ -80,4 +79,4 @@ const SignUpPage = (props) => {
     );
 }
 
-export default withApiProgress(SignUpPage, "api/1.0/users");;
+export default WithApiProgress(SignUpPage, "api/1.0/users");
