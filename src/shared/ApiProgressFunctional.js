@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 
 
-const getDisplayName = (WrappedComponent) => {
+const getDisplayName = ({WrappedComponent}) => {
     return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-export const WithApiProgress = (WrappedComponent, apiPath) => {
+export const WithApiProgress = ( {WrappedComponent}, apiPath) => {
 
-    const [displayName, setDisplayName] = useState(`ApiProgress(${getDisplayName(WrappedComponent)}`);
+    const [displayName, setDisplayName] = useState(`ApiProgress`);//${getDisplayName(WrappedComponent)}
     const [pendingApiCall, setPendingApiCall] = useState(false);
 
     useEffect(() => {
@@ -38,6 +38,6 @@ export const WithApiProgress = (WrappedComponent, apiPath) => {
     };
 
     return(
-        <WrappedComponent pendingApiCall={pendingApiCall} {... this.props}/>
+        <WrappedComponent pendingApiCall={pendingApiCall} />
     );
 }
