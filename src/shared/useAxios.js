@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com';
+axios.defaults.baseURL = 'http://localhost:8080';
 
-const useAxios = () => {
+
+const useAxios = ({ url, method, body = null, headers = null }) => {
     const [response, setResponse] = useState(null);
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState('');
     const [loading, setloading] = useState(true);
 
     const fetchData = () => {
-        axios
-            .get('/posts')
+        axios[method](url, JSON.parse(headers), JSON.parse(body))
             .then((res) => {
                 setResponse(res.data);
             })
             .catch((err) => {
-                setError(err);
+                setErrors(err);
             })
             .finally(() => {
                 setloading(false);
@@ -24,10 +24,9 @@ const useAxios = () => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [method, url, body, headers]);
 
-    // custom hook returns value
-    return { response, error, loading };
+    return { response, error: errors, loading };
 };
 
 export default useAxios;
