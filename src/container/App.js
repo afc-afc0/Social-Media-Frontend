@@ -34,10 +34,10 @@ class App extends React.Component {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/loginfunctional" element={<LoginPageFunctional />} />
-          <Route path="/signupfunctional" element={<SignUpPage />} />
+          {/* <Route path="/signupfunctional" element={<SignUpPage />} /> */}
           <Route path="/signup" element={<UserSignUpPage />} />
           <Route path="/user/:username" element={<UserPage/>} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/" />} /> 
         </Routes>
       </Router>
     </div>

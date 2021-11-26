@@ -3,30 +3,27 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
+export const useAxios = (axiosParams) => {
+    const [response, setResponse] = useState(undefined);
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(true);
 
-const useAxios = ({ url, method, body = null, headers = null }) => {
-    const [response, setResponse] = useState(null);
-    const [errors, setErrors] = useState('');
-    const [loading, setloading] = useState(true);
-
-    const fetchData = () => {
-        axios[method](url, JSON.parse(headers), JSON.parse(body))
-            .then((res) => {
-                setResponse(res.data);
-            })
-            .catch((err) => {
-                setErrors(err);
-            })
-            .finally(() => {
-                setloading(false);
-            });
+    const fetchData = async (params) => {
+      try {
+       const result = await axios.request(params);
+       setResponse(result.data);
+       } catch( errors ) {
+         setErrors(errors);
+       } finally {
+         setLoading(false);
+       }
     };
 
     useEffect(() => {
-        fetchData();
-    }, [method, url, body, headers]);
+        console.log("using axios 2");
+        fetchData(axiosParams);
+    }, [] ); // execute once only
 
-    return { response, error: errors, loading };
+    return { response, errors, loading };
 };
 
-export default useAxios;
