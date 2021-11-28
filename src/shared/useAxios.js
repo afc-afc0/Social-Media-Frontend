@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:8080';
-
 export const useAxios = (axiosParams) => {
     const [response, setResponse] = useState(undefined);
     const [errors, setErrors] = useState({});
@@ -13,6 +11,7 @@ export const useAxios = (axiosParams) => {
        const result = await axios.request(params);
        setResponse(result.data);
        } catch( errors ) {
+         console.log(errors);
          setErrors(errors);
        } finally {
          setLoading(false);
