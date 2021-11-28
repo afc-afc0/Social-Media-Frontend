@@ -39,7 +39,7 @@ class UserSignUpPage extends React.Component{
     }
     
     onClickSignUp = async event =>{
-        event.preventDefault();//We block browser
+        event.preventDefault();
 
         const { username, displayName, password} = this.state;
 
@@ -49,7 +49,6 @@ class UserSignUpPage extends React.Component{
             password,
         };
 
-        
         try{
             await signup(body);
         }catch (error){
@@ -60,7 +59,7 @@ class UserSignUpPage extends React.Component{
 
     render(){
         const { pendingApiCall} = this.props;
-        const { errors } = this.state;// we dont want to use this.state.pendingApiCall everytime
+        const { errors } = this.state;
         const { username, displayName, password, passwordRepeat} = errors;
         return(
         <div className = "container">
