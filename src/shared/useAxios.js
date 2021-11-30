@@ -8,20 +8,29 @@ export const useAxios = (axiosParams) => {
 
     const fetchData = async (params) => {
       try {
-       const result = await axios.request(params);
-       setResponse(result.data);
-       } catch( errors ) {
-         console.log(errors);
-         setErrors(errors);
-       } finally {
-         setLoading(false);
-       }
+        console.log(params);
+        const result = await axios.request(params);
+        setResponse(result.data);
+      } catch( errors ) {
+        console.log(errors);
+        setErrors(errors);
+      } finally {
+        setLoading(false);
+      }
     };
 
     useEffect(() => {
-        console.log("using axios 2");
         fetchData(axiosParams);
-    }, [] ); // execute once only
+        // const requestInterceptor = axios.interceptors.request.use(interceptors.request, interceptors.error);
+        // // add response interceptors
+        // const responseInterceptor = axios.interceptors.response.use(interceptors.response, interceptors.error);
+
+        // return () => {
+        //   // remove all intercepts when done
+        //   axios.interceptors.request.eject(requestInterceptor);
+        //   axios.interceptors.response.eject(responseInterceptor);
+        // };
+    },[]); // execute once only
 
     return { response, errors, loading };
 };
