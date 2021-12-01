@@ -10,19 +10,17 @@ import {useAxios} from "../shared/useAxios";
 export const LoginPage = (props) => {
 
     const [values, handleChange] = useInput({username: "", password: ""});
-    const [isSending, setIsSending] = useState(false);
 
-    const { response, loading, errors } = useAxios({
+    const { response, errors, loading } = useAxios({
         method : "POST",
         url : "/api/1.0/auth",
+        auth : {username : values.username , password : values.password},
         headers : {
             accept : "*/*",
-            auth : {username : values.username , password : values.password}
         },
-        data : {}
     });
 
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(undefined);
     const isMounted = useRef(false);
     const navigate = useNavigate();
 
@@ -38,11 +36,21 @@ export const LoginPage = (props) => {
     //       setIsSending(false)
     //   }, [isSending]) 
 
+    const handleOnChange = useCallback(event => {
+        handleChange(event);
+    },[values]);
+
+    useEffect(() => {
+        if (errors !== undefined){
+            setError(errors.message);
+        }
+    },[errors])
+
     useEffect(() => {
         return () => {
           isMounted.current = false
         }
-      }, [])
+    },[])
 
     // useEffect(() => {
     //     if (errors !== null){
@@ -72,8 +80,8 @@ export const LoginPage = (props) => {
         <div className="container">
             <form className="needs-validation">
                 <h1 className="text-center">Login</h1>
-                <Input name="username" label="Username" value={values.username} onChange={handleChange} />
-                <Input name="password" label="Password" value={values.password} onChange={handleChange} type="password"/>
+                <Input name="username" label="Username" value={values.username} onChange={handleOnChange} />
+                <Input name="password" label="Password" value={values.password} onChange={handleOnChange} type="password"/>
                 {error && <div className="alert alert-danger">{error}</div>}
                 <div className="spacer5"></div>
                 {<ButtonWithProgress2 disabled={!buttonEnabled || loading} pendingApiCall={loading} text={"Login"}/>}
