@@ -1,64 +1,58 @@
 import React from "react";
 import Input from "../components/input";
-import { login } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
-import {withApiProgress} from "../shared/ApiProgress";
+import { useInput} from "../shared/useInput";
+import { useNavigate  } from 'react-router-dom';
+import {useAxios} from "../shared/useAxios";
+import {useEffect} from 'react'
 
-class LoginPage extends React.Component {
+export const LoginPage = () => {
 
-    state = {
-        username: null,
-        password: null,
-        error: null,
-    };
+    const [values, handleChange] = useInput({username : "", password : ""});
+    const navigate = useNavigate();
 
-    onChange = event => {
-        const {name, value} = event.target;
-        this.setState({
-            [name]:value,
-            error:null
-        })
-    }
+    const {response, apiError, loading, apiRequestCallback} = useAxios({
+        method : "POST",
+        url : "/api/1.0/auth",
+        auth : {username : values.username , password : values.password},
+        headers : {
+            accept : "*/*",
+        },
+    });
 
-    onClickLogin = async event => {
+    useEffect(() => {
+        if (response !== undefined)
+            navigate("/", { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [response])
+
+    useEffect(() => {
+        if (apiError != null){
+            console.log("ApiError = ",apiError);
+        }
+    }, [apiError])
+
+
+    const onButtonClick = (event) => {
         event.preventDefault();
-        const {username, password} = this.state
-        const creds = {
-            username: username,
-            password: password
-        }
-        
-        this.setState({
-            error:null
-        })
-        try {
-            await login(creds);
-        } catch(apiError){
-            this.setState({
-            error: apiError.response.data.message
-          })
-        }
+        apiRequestCallback();
     }
 
-    render(){
-        const {pendingApiCall} = this.props;
-        const {username, password, error} = this.state;
+    const buttonEnabled = values.username && values.password;
 
-        const buttonEnabled = username && password;
-        
-        return(
-            <div className="container">
-                <form className="needs-validation">
-                    <h1 className="text-center">Login</h1>
-                    <Input name="username" label="Username" onChange={this.onChange} />
-                    <Input name="password" label="Password" onChange={this.onChange} type="password"/>
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    <div className="spacer5"></div>
-                    <ButtonWithProgress onClick={this.onClickLogin} disabled={!buttonEnabled || pendingApiCall} pendingApiCall={pendingApiCall} text={"Login"}/>
-                </form>
-            </div>
-        );
-    }
+    return(
+        <div className="container">
+            <form className="needs-validation">
+                <h1 className="text-center">Login</h1>
+                <Input name="username" label="Username" value={values.username} onChange={handleChange}  />
+                <Input name="password" label="Password" value={values.password} onChange={handleChange} type="password"/>
+                {apiError && <div className="alert alert-danger">{apiError.message}</div>}
+                <div className="spacer5"></div>
+                {<ButtonWithProgress onClick={onButtonClick} disabled={!buttonEnabled || loading} pendingApiCall={loading} text={"Login"}/>}
+            </form>
+        </div>
+    );
+    
 }
 
-export default withApiProgress(LoginPage, "/api/1.0/auth");
+export default LoginPage;

@@ -1,37 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 export const useAxios = (axiosParams) => {
     const [response, setResponse] = useState(undefined);
-    const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [apiError, setApiErrors] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const fetchData = async (params) => {
       try {
-        console.log(params);
+        setLoading(true);
         const result = await axios.request(params);
         setResponse(result.data);
-      } catch( errors ) {
-        console.log(errors);
-        setErrors(errors);
+      } catch( apiError ) {
+        setApiErrors(apiError.response.data);
       } finally {
         setLoading(false);
       }
     };
 
-    useEffect(() => {
-        fetchData(axiosParams);
-        // const requestInterceptor = axios.interceptors.request.use(interceptors.request, interceptors.error);
-        // // add response interceptors
-        // const responseInterceptor = axios.interceptors.response.use(interceptors.response, interceptors.error);
+    const apiRequestCallback = ( () => {
+        if (loading === false){
+          fetchData(axiosParams);
+        }
+    })
 
-        // return () => {
-        //   // remove all intercepts when done
-        //   axios.interceptors.request.eject(requestInterceptor);
-        //   axios.interceptors.response.eject(responseInterceptor);
-        // };
-    },[]); // execute once only
-
-    return { response, errors, loading };
+    return { response, apiError, loading, apiRequestCallback };
 };
 

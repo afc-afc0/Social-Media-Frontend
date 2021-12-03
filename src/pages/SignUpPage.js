@@ -1,22 +1,34 @@
-import { signup } from "../api/apiCalls";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import Input from "../components/input";
 import { useInput } from "../shared/useInput";
 import { useState, useEffect } from "react";
-import { WithApiProgress } from "../shared/ApiProgressFunctional";
+import { useNavigate } from "react-router";
+import { useAxios } from "../shared/useAxios";
 
-const SignUpPage = (props) => {
+export const SignUpPage = () => {
 
     const [ errors, setErrors] = useState({username:"", displayName:"", password:""});
     const [ inputs, setInput] = useInput({username: "", displayName: "", password: "", passwordRepeat: ""});
+    const navigate = useNavigate();
 
+    const {response, apiError, loading, apiRequestCallback} = useAxios({
+        method: "POST",
+        url: "api/1.0/users",
+        headers : {
+            accept : "*/*"
+        },
+        data : {
+            username: inputs.username, 
+            displayName: inputs.displayName,
+            password: inputs.password
+        }
+    });
 
     useEffect ( () => {
         resetErrors();
     }, [inputs.username, inputs.displayName])
 
     useEffect ((errors) => {
-
         resetErrors();
 
         if (inputs.password !==  inputs.passwordRepeat)
@@ -39,30 +51,30 @@ const SignUpPage = (props) => {
         })
     }
 
-    const onClickSignUp = async event =>{
-        event.preventDefault();
-
-        const body = {
-            username: inputs.username,
-            displayName: inputs.displayName,
-            password: inputs.password
-        };
-
-        try{
-            await signup(body);
-
-        }catch (error){
-            if (error.response.data.validationErrors){
-                setErrors({
-                    username : error.response.data.validationErrors.username,
-                    displayName : error.response.data.validationErrors.displayName,
-                    password : error.response.data.validationErrors.password,
-                })
-            }
+    useEffect(() => {
+        if (apiError != null){
+            console.log("Error message = ", apiError.message);
+            setErrors({
+                username: apiError.validationErrors.username,
+                displayName: apiError.validationErrors.displayName,
+                password: apiError.validationErrors.password
+            })
         }
-    }
+            
+    },[apiError])
 
-    const { pendingApiCall } = props;
+    useEffect(() => {
+        if (response !== undefined){
+            console.log(response);
+            navigate("/", { replace: true });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [response])
+
+    const onClickSignUp = (event) => {
+        event.preventDefault();
+        apiRequestCallback();
+    }
 
     return(
         <div className = "container">
@@ -73,10 +85,10 @@ const SignUpPage = (props) => {
                 <Input name="password" label="Password" value={inputs.password}  error={errors.password} onChange={setInput} type="password"/>
                 <Input name="passwordRepeat" label="Password Repeat" value={inputs.passwordRepeat} error={errors.passwordRepeat} onChange={setInput} type="password"/>
                 <div className="spacer5"></div>
-                <ButtonWithProgress onClick={onClickSignUp} disabled={pendingApiCall || errors.passwordRepeat !== undefined} pendingApiCall={pendingApiCall} text={"Sign Up"}/>
+                <ButtonWithProgress onClick={onClickSignUp} disabled={loading || errors.passwordRepeat !== undefined} pendingApiCall={loading} text={"Sign Up"}/>
             </form>
         </div>
     );
 }
 
-export default WithApiProgress(SignUpPage, "api/1.0/users");
+export default SignUpPage;

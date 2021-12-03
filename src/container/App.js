@@ -1,9 +1,7 @@
 import React from "react";
-import UserSignUpPage from "../pages/UserSignUpPage";
-import LoginPage from "../pages/LoginPage";
 import HomePage from "../pages/HomePage"
 import UserPage from "../pages/UserPage";
-import LoginPageFunctional from "../pages/LoginPageFunctional";
+import LoginPage from "../pages/LoginPage";
 import TopBar from "../components/TopBar";
 import {HashRouter as Router, Route, Navigate, Routes} from 'react-router-dom';
 import SignUpPage from "../pages/SignUpPage";
@@ -33,9 +31,7 @@ class App extends React.Component {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/loginfunctional" element={<LoginPageFunctional />} />
-          {/* <Route path="/signupfunctional" element={<SignUpPage />} /> */}
-          <Route path="/signup" element={<UserSignUpPage />} />
+          <Route path="/signup" element={<SignUpPage />} /> 
           <Route path="/user/:username" element={<UserPage/>} />
           <Route path="*" element={<Navigate to="/" />} /> 
         </Routes>
