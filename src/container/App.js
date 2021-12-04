@@ -9,7 +9,7 @@ import { useState } from "react";
 
 const App = () => {
   
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("Ahmet");
 
   const onLoginSuccess = (username) => {
@@ -17,13 +17,22 @@ const App = () => {
     setUsername(username);
   }
 
+  const onLogoutSuccess = () => {
+    setIsLoggedIn(false);
+    setUsername(undefined);
+
+    return (
+      <Navigate to="/" />
+    )
+  }
+
   return (
     <div>
       <Router>
-        <TopBar username={username} isLoggedIn={isLoggedIn} />
+        <TopBar username={username} isLoggedIn={isLoggedIn} onLogoutSuccess={onLogoutSuccess} />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          { !isLoggedIn && <Route path="/login" element={<LoginPage onLoginSuccess={onLoginSuccess}/>} />}
           <Route path="/signup" element={<SignUpPage />} /> 
           <Route path="/user/:username" element={<UserPage/>} />
           <Route path="*" element={<Navigate to="/" />} /> 

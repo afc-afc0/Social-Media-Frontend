@@ -6,7 +6,7 @@ import { useNavigate  } from 'react-router-dom';
 import {useAxios} from "../shared/useAxios";
 import {useEffect} from 'react'
 
-export const LoginPage = () => {
+export const LoginPage = ({onLoginSuccess}) => {
 
     const [values, handleChange] = useInput({username : "", password : ""});
     const navigate = useNavigate();
@@ -21,8 +21,10 @@ export const LoginPage = () => {
     });
 
     useEffect(() => {
-        if (response !== undefined)
+        if (response !== undefined && response.username === values.username){ //Login succesfull
+            onLoginSuccess(values.username);
             navigate("/", { replace: true });
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [response])
 

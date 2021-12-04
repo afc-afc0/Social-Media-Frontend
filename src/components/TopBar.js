@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 export const TopBar = (props) => {
 
-    const {isLoggedIn, username} = props;
+    const {isLoggedIn, username, onLogoutSuccess} = props;
 
     let links = (
         <ul className="navbar-nav ms-auto">
@@ -29,9 +29,7 @@ export const TopBar = (props) => {
                     {username}
                 </Link>
             </li>
-            <li className="nav-link">
-                {"Logout"}
-            </li>
+            <li className="nav-link" onClick={onLogoutSuccess} style={{cursor: 'pointer'}}>{"Logout"}</li>
         </ul>
         );
     }
