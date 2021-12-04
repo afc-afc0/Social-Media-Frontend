@@ -5,26 +5,19 @@ import LoginPage from "../pages/LoginPage";
 import TopBar from "../components/TopBar";
 import {HashRouter as Router, Route, Navigate, Routes} from 'react-router-dom';
 import SignUpPage from "../pages/SignUpPage";
+import { useState } from "react";
 
-class App extends React.Component {
+const App = () => {
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [username, setUsername] = useState("Ahmet");
 
-  state = {
-    isLoggedIn: false,
-    username: 'Fatih'
-  };
-
-  onLoginSuccess = (username) => {
-    this.setState({
-      username,
-      isLoggedIn: true
-    })
+  const onLoginSuccess = (username) => {
+    setIsLoggedIn(true);
+    setUsername(username);
   }
 
-  render() {
-
-    const {isLoggedIn, username} = this.state;
-
-    return (
+  return (
     <div>
       <Router>
         <TopBar username={username} isLoggedIn={isLoggedIn} />
@@ -36,9 +29,9 @@ class App extends React.Component {
           <Route path="*" element={<Navigate to="/" />} /> 
         </Routes>
       </Router>
-    </div>
-    )
-  }
+    </div>   
+  )
+  
 }
 
 export default App;
