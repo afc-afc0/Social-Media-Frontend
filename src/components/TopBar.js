@@ -1,10 +1,14 @@
 import React from 'react'
 import logo from "../assets/html5_game_transparent.png"
 import { Link } from 'react-router-dom'
+import { Authentication } from '../shared/AuthenticationContext'
 
-export const TopBar = (props) => {
+export const TopBar = () => {
 
-    const {isLoggedIn, username, onLogoutSuccess} = props;
+    const value = React.useContext(Authentication);
+
+    const { authState, onLogoutSuccess } = value;
+    const { isLoggedIn, username} = authState;
 
     let links = (
         <ul className="navbar-nav ms-auto">
@@ -45,7 +49,7 @@ export const TopBar = (props) => {
             </nav>
         </div>
     )
-    
+
 }
 
 export default TopBar;

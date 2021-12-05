@@ -1,12 +1,16 @@
 import React from "react";
 import Input from "../components/input";
 import ButtonWithProgress from "../components/buttonWithProgress";
-import { useInput} from "../shared/useInput";
+import { useInput } from "../shared/useInput";
 import { useNavigate  } from 'react-router-dom';
-import {useAxios} from "../shared/useAxios";
-import {useEffect} from 'react'
+import { useAxios } from "../shared/useAxios";
+import { useEffect } from 'react'
+import { Authentication } from "../shared/AuthenticationContext";
 
-export const LoginPage = ({onLoginSuccess}) => {
+export const LoginPage = () => {
+
+    const value = React.useContext(Authentication);
+    const { onLoginSuccess } = value;
 
     const [values, handleChange] = useInput({username : "", password : ""});
     const navigate = useNavigate();
@@ -22,7 +26,13 @@ export const LoginPage = ({onLoginSuccess}) => {
 
     useEffect(() => {
         if (response !== undefined && response.username === values.username){ //Login succesfull
-            onLoginSuccess(values.username);
+
+            const authState = {
+                ...response,
+                password: values.password,
+            }
+
+            onLoginSuccess(authState);
             navigate("/", { replace: true });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
