@@ -3,8 +3,10 @@ import logo from "../assets/html5_game_transparent.png"
 import { Link } from 'react-router-dom'
 import { Authentication } from '../shared/AuthenticationContext'
 
+
 export const TopBar = () => {
 
+    const state = useSelector();
     const value = React.useContext(Authentication);
 
     const { authState, onLogoutSuccess } = value;

@@ -1,19 +1,19 @@
 import React from 'react'
 import {} from 'react-router-dom'
-import { Authentication } from '../shared/AuthenticationContext'
+// import { Authentication } from '../shared/AuthenticationContext'
 import { useParams } from 'react-router-dom'
 
-const ProfileCard = (props) => {
+const ProfileCard = () => {
 
-    const authValues = React.useContext(Authentication);
-    const authUsername = authValues.authState.username;
+    // const authValues = React.useContext(Authentication);
+    // const authUsername = authValues.authState.username;
 
     const { username } = useParams();
 
     let message = "We can't edit";
-    if (authUsername === username){
-        message = "We can edit";
-    }
+    // if (authUsername === username){
+    //     message = "We can edit";
+    // }
 
     return (
         <div>

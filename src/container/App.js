@@ -9,8 +9,9 @@ import { Authentication } from "../shared/AuthenticationContext";
 
 const App = () => {
   
-  const authValues = React.useContext(Authentication);
-  const { isLoggedIn } = authValues;
+  // const authValues = React.useContext(Authentication);
+  // const { isLoggedIn } = authValues;
+  const isLoggedIn = false;
 
   return (
     <div>
