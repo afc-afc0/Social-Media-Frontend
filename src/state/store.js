@@ -1,21 +1,10 @@
-import { createStore } from "redux";
-
-const [authState, setAuthState] = useState({
-    isLoggedIn: false,
-    username: undefined,
-    displayName: undefined,
-    image: undefined,
-    password: undefined
-});
-
-const initialState = {
-    isLoggedIn: false,
-    username: undefined,
-    displayName: undefined,
-    image: undefined,
-    password: undefined
-}
+import { applyMiddleware, createStore } from "redux";
+import reducers from "./reducers/index";
+import thunk from "redux-thunk"
 
 export const store = createStore(
+    reducers,
+    {},
+    applyMiddleware(thunk)
+);
     
-)

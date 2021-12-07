@@ -6,11 +6,16 @@ import { useNavigate  } from 'react-router-dom';
 import { useAxios } from "../shared/useAxios";
 import { useEffect } from 'react'
 import { Authentication } from "../shared/AuthenticationContext";
+import { useSelector, useDispatch} from 'react-redux'
+import { bindActionCreators } from 'redux'; 
+import { actionCreators } from "../state/index";
+
+
 
 export const LoginPage = () => {
-
-    const value = React.useContext(Authentication);
-    const { onLoginSuccess } = value;
+    
+    const dispatch = useDispatch();
+    const { userLogin } = bindActionCreators(actionCreators, dispatch);
 
     const [values, handleChange] = useInput({username : "", password : ""});
     const navigate = useNavigate();
@@ -32,7 +37,7 @@ export const LoginPage = () => {
                 password: values.password,
             }
 
-            onLoginSuccess(authState);
+            userLogin(authState);
             navigate("/", { replace: true });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

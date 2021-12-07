@@ -3,15 +3,17 @@ import HomePage from "../pages/HomePage"
 import UserPage from "../pages/UserPage";
 import LoginPage from "../pages/LoginPage";
 import TopBar from "../components/TopBar";
-import {HashRouter as Router, Route, Navigate, Routes} from 'react-router-dom';
+import { HashRouter as Router, Route, Navigate, Routes} from 'react-router-dom';
 import SignUpPage from "../pages/SignUpPage";
-import { Authentication } from "../shared/AuthenticationContext";
+import { useSelector } from "react-redux";
 
 const App = () => {
   
   // const authValues = React.useContext(Authentication);
   // const { isLoggedIn } = authValues;
-  const isLoggedIn = false;
+
+  const state = useSelector((state) => state);
+  const { isLoggedIn } = state.user;
 
   return (
     <div>

@@ -4,24 +4,9 @@ import './index.css';
 import './bootstrap-override.scss';
 import reportWebVitals from './reportWebVitals';
 import App from './container/App';
-import AuthenticationContext from './shared/AuthenticationContext';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import { useState } from 'react';
+import { store } from './state/store';
 
-const [authState, setAuthState] = useState({
-  isLoggedIn: false,
-  username: undefined,
-  displayName: undefined,
-  image: undefined,
-  password: undefined
-});
-
-const reducer = (state, action) => {
-  return state;
-}
-
-const store = createStore(reducer);
 
 ReactDOM.render(
   <Provider store={store}>

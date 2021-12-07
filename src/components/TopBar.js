@@ -1,16 +1,17 @@
 import React from 'react'
 import logo from "../assets/html5_game_transparent.png"
 import { Link } from 'react-router-dom'
-import { Authentication } from '../shared/AuthenticationContext'
-
+import { useSelector, useDispatch} from 'react-redux'
+import { bindActionCreators } from 'redux'; 
+import { actionCreators } from "../state/index";
 
 export const TopBar = () => {
 
-    const state = useSelector();
-    const value = React.useContext(Authentication);
+    const state = useSelector((state) => state);
+    const { username, isLoggedIn } = state.user;
 
-    const { authState, onLogoutSuccess } = value;
-    const { isLoggedIn, username} = authState;
+    const dispatch = useDispatch();
+    const { userLogout } = bindActionCreators(actionCreators, dispatch);
 
     let links = (
         <ul className="navbar-nav ms-auto">
@@ -35,7 +36,7 @@ export const TopBar = () => {
                     {username}
                 </Link>
             </li>
-            <li className="nav-link" onClick={onLogoutSuccess} style={{cursor: 'pointer'}}>{"Logout"}</li>
+            <li className="nav-link" onClick={() => userLogout()} style={{cursor: 'pointer'}}>{"Logout"}</li>  
         </ul>
         );
     }
