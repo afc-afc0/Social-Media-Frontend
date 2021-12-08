@@ -5,11 +5,11 @@ import './bootstrap-override.scss';
 import reportWebVitals from './reportWebVitals';
 import App from './container/App';
 import { Provider } from 'react-redux';
-import { store } from './state/store';
+import { configureStore } from './state/store';
 
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={configureStore()}>
     <App/>
   </Provider>,
   document.getElementById('root')
