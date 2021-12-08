@@ -1,8 +1,9 @@
+import * as ACTIONS from "../Constants";
 
 export const userLogin = (auth) => {
     return (dispatch) => {
         dispatch({
-            type: "login",
+            type: ACTIONS.LOGIN,
             payload: auth
         })
     }
@@ -11,7 +12,7 @@ export const userLogin = (auth) => {
 export const userLogout = () => {
     return (dispatch) => {
         dispatch({
-            type: "logout"
+            type: ACTIONS.LOGOUT
         })
     }
 }

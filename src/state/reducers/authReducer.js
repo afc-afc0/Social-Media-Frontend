@@ -1,3 +1,4 @@
+import * as ACTIONS from "../Constants";
 
 const defaultState = {
     isLoggedIn: false,
@@ -8,16 +9,13 @@ const defaultState = {
 }
 
 const reducer = (state = defaultState, action) => {
-
-    console.log("Reducer called");
-    console.log(action);
     switch (action.type) {
-        case "login":
+        case ACTIONS.LOGIN:
             return {
                 ...action.payload,
                 isLoggedIn: true
             };
-        case "logout":
+        case ACTIONS.LOGOUT:
             return defaultState;
         default:
             return state;
