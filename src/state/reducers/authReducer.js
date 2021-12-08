@@ -10,13 +10,14 @@ const defaultState = {
 const reducer = (state = defaultState, action) => {
 
     console.log("Reducer called");
+    console.log(action);
     switch (action.type) {
         case "login":
-            console.log(action);
-            console.log(state);
-            return action.user;
+            return {
+                ...action.payload,
+                isLoggedIn: true
+            };
         case "logout":
-            console.log("returning = ", defaultState);
             return defaultState;
         default:
             return state;

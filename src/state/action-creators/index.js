@@ -3,7 +3,7 @@ export const userLogin = (auth) => {
     return (dispatch) => {
         dispatch({
             type: "login",
-            user: auth
+            payload: auth
         })
     }
 }
