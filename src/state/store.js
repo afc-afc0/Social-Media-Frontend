@@ -1,12 +1,14 @@
 import { applyMiddleware, createStore, compose} from "redux";
 import reducers from "./reducers/index";
 import thunk from "redux-thunk"
+import SecureLS  from "secure-ls";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const secureLs = new SecureLS();
 
-export const configureStore = () => {
 
-    const authData = localStorage.getItem("auth");
+const getStateFromStorage = () => {
+    const authData = secureLs.get("auth");
     
     let stateInLocalStorage = {
         isLoggedIn: false,
@@ -16,24 +18,27 @@ export const configureStore = () => {
         password: undefined
     }
 
-    if (authData) {
-        try{
-            stateInLocalStorage = JSON.parse(authData);
-        } catch (error) {
-            console.error("Unexpected state");
-        }
-    }
+    if (authData)
+        return authData;
 
+    return stateInLocalStorage;
+}
+
+const updateStateInStorage = (newState) => {
+    secureLs.set("auth", newState);
+}
+
+export const configureStore = () => {
     const store = createStore(
         reducers,
-        stateInLocalStorage,
+        getStateFromStorage(),
         composeEnhancers(
             applyMiddleware(thunk)
         )
     );
 
     store.subscribe(() => {
-        localStorage.setItem("auth", JSON.stringify(store.getState()));
+        updateStateInStorage(store.getState());
     });
     
     return store;
