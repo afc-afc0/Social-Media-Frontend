@@ -5,7 +5,7 @@ import './bootstrap-override.scss';
 import reportWebVitals from './reportWebVitals';
 import App from './container/App';
 import { Provider } from 'react-redux';
-import { configureStore } from './state/store';
+import { configureStore } from './redux/store';
 
 
 ReactDOM.render(

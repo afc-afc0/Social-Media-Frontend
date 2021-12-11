@@ -7,7 +7,7 @@ import { useAxios } from "../shared/useAxios";
 import { useEffect } from 'react'
 import { useDispatch} from 'react-redux'
 import { bindActionCreators } from 'redux'; 
-import { actionCreators } from "../state/index";
+import { actionCreators } from "../redux/index";
 
 
 
