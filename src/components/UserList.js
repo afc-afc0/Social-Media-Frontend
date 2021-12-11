@@ -2,6 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { useAxios } from '../shared/useAxios';
 import ButtonWithProgress from './buttonWithProgress';
 
+const Item = (props) => {
+
+    const [username, setUsername] = useState(undefined);
+
+    useEffect(() => {
+        setUsername(props.user.username);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
+
+    return (
+        <div>
+            {username}
+            <button>Delete</button>
+        </div>
+    )
+}
+
 export default function UserList() {
     
     const [users, setUsers] = useState(null);
@@ -16,8 +33,7 @@ export default function UserList() {
 
     useEffect(() => {
         if (response !== undefined){ //Login succesfull
-            console.log(response);
-            setUsers();
+            setUsers(response);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [response])
@@ -29,16 +45,18 @@ export default function UserList() {
         }
     }, [apiError])
 
-    const onButtonClick = (event) => {
-        event.preventDefault();
-        apiRequestCallback();
+    const onDeleteItem = () => {
+        console.log("Delete clicked");
     }
 
     return (
         <div>
-            <UserList/>
-            <ButtonWithProgress onClick={onButtonClick} disabled={loading} pendingApiCall={loading} text={"Get Users"}/>
+            <ButtonWithProgress onClick={(event) => apiRequestCallback(event)} disabled={loading} pendingApiCall={loading} text={"Get Users"}/>
+            <div>
+                {users && users.map((user, index) => (
+                    <Item key={index} user={user}/>
+                ))}
+            </div>
         </div>
-
     )
 }
