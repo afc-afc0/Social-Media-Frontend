@@ -18,10 +18,11 @@ export const useAxios = (axiosParams) => {
       }
     };
 
-    const apiRequestCallback = ( () => {
-        if (loading === false){
-          fetchData(axiosParams);
-        }
+    const apiRequestCallback = ( (event) => {
+      event.preventDefault();
+      if (loading === false){
+        fetchData(axiosParams);
+      }
     })
 
     return { response, apiError, loading, apiRequestCallback };

@@ -24,6 +24,14 @@ export const SignUpPage = () => {
         }
     });
 
+    const resetErrors = () => {
+        setErrors({
+            username : "",
+            displayName : "",
+            password : ""
+        })
+    }
+
     useEffect ( () => {
         resetErrors();
     }, [inputs.username, inputs.displayName])
@@ -43,13 +51,7 @@ export const SignUpPage = () => {
             });
     }, [inputs.password, inputs.passwordRepeat])
     
-    const resetErrors = () => {
-        setErrors({
-            username : "",
-            displayName : "",
-            password : ""
-        })
-    }
+    
 
     useEffect(() => {
         if (apiError != null){
@@ -71,11 +73,6 @@ export const SignUpPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [response])
 
-    const onClickSignUp = (event) => {
-        event.preventDefault();
-        apiRequestCallback();
-    }
-
     return(
         <div className = "container">
             <form className="needs-validation">
@@ -85,7 +82,7 @@ export const SignUpPage = () => {
                 <Input name="password" label="Password" value={inputs.password}  error={errors.password} onChange={setInput} type="password"/>
                 <Input name="passwordRepeat" label="Password Repeat" value={inputs.passwordRepeat} error={errors.passwordRepeat} onChange={setInput} type="password"/>
                 <div className="spacer5"></div>
-                <ButtonWithProgress onClick={onClickSignUp} disabled={loading || errors.passwordRepeat !== undefined} pendingApiCall={loading} text={"Sign Up"}/>
+                <ButtonWithProgress onClick={(event) => apiRequestCallback(event)} disabled={loading || errors.passwordRepeat !== undefined} pendingApiCall={loading} text={"Sign Up"}/>
             </form>
         </div>
     );

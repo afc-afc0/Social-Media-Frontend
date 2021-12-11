@@ -9,8 +9,6 @@ import { useDispatch} from 'react-redux'
 import { bindActionCreators } from 'redux'; 
 import { actionCreators } from "../redux/index";
 
-
-
 export const LoginPage = () => {
     
     const dispatch = useDispatch();
@@ -48,12 +46,6 @@ export const LoginPage = () => {
         }
     }, [apiError])
 
-
-    const onButtonClick = (event) => {
-        event.preventDefault();
-        apiRequestCallback();
-    }
-
     const buttonEnabled = values.username && values.password;
 
     return(
@@ -64,7 +56,7 @@ export const LoginPage = () => {
                 <Input name="password" label="Password" value={values.password} onChange={handleChange} type="password"/>
                 {apiError && <div className="alert alert-danger">{apiError.message}</div>}
                 <div className="spacer5"></div>
-                {<ButtonWithProgress onClick={onButtonClick} disabled={!buttonEnabled || loading} pendingApiCall={loading} text={"Login"}/>}
+                {<ButtonWithProgress onClick={(event) => apiRequestCallback(event)} disabled={!buttonEnabled || loading} pendingApiCall={loading} text={"Login"}/>}
             </form>
         </div>
     );
