@@ -27,7 +27,7 @@ export const LoginPage = () => {
     });
 
     useEffect(() => {
-        if (response !== undefined && response.username === values.username){ //Login succesfull
+        if (response !== undefined && response.username === values.username){
 
             const authState = {
                 ...response,

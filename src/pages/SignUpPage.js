@@ -67,7 +67,6 @@ export const SignUpPage = () => {
 
     useEffect(() => {
         if (response !== undefined){
-            console.log(response);
             navigate("/", { replace: true });
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
