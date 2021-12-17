@@ -3,7 +3,7 @@ import Input from "../components/input";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import { useInput } from "../shared/useInput";
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { loginHandler } from "../redux/action-creators/index"
 import { useApiProgress } from "../shared/useApiProgress";
@@ -16,6 +16,10 @@ export const LoginPage = () => {
     const [error, setError] = useState();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        setError(undefined);
+    }, [values.username, values.password]);
+
     const onClickLogin = async (event) => {
         event.preventDefault();
         
@@ -25,7 +29,7 @@ export const LoginPage = () => {
             await dispatch(loginHandler(values));
             navigate("/", { replace: true });
         } catch (apiError) {
-            console.log(apiError);
+            console.log(apiError.response.data.message);
             setError(apiError.response.data.message);
         }            
     }
@@ -50,7 +54,7 @@ export const LoginPage = () => {
                     onChange={handleChange} 
                     type="password"
                 />
-                {error && <div className="alert alert-danger">{error.message}</div>}
+                {error && <div className="alert alert-danger">{error}</div>}
                 <div className="spacer5"></div>
                 {<ButtonWithProgress 
                     onClick={(event) => onClickLogin(event)} 
