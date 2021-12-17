@@ -21,15 +21,18 @@ export default function UserList() {
     });
     
     useEffect(() => {
-        if (response !== undefined){ 
+        console.log("here");
+    },[page])
+
+    useEffect(() => {
+        if (response !== undefined){
             setPage(page => ({
-                ...page,
                 content: response.content,
                 size: response.size,
                 number: response.number,
                 last: response.last,
                 first: response.first
-            })); 
+            }));
         }
     }, [response])
     

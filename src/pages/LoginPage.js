@@ -2,61 +2,62 @@ import React from "react";
 import Input from "../components/input";
 import ButtonWithProgress from "../components/buttonWithProgress";
 import { useInput } from "../shared/useInput";
-import { useNavigate  } from 'react-router-dom';
-import { useAxios } from "../shared/useAxios";
-import { useEffect } from 'react'
-import { useDispatch} from 'react-redux'
-import { bindActionCreators } from 'redux'; 
-import { actionCreators } from "../redux/index";
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { loginHandler } from "../redux/action-creators/index"
+import { useApiProgress } from "../shared/useApiProgress";
 
 export const LoginPage = () => {
     
     const dispatch = useDispatch();
-    const { userLogin } = bindActionCreators(actionCreators, dispatch);
 
     const [values, handleChange] = useInput({username : "", password : ""});
+    const [error, setError] = useState();
     const navigate = useNavigate();
 
-    const {response, apiError, loading, apiRequestCallback} = useAxios({
-        method : "POST",
-        url : "/api/1.0/auth",
-        auth : {username : values.username , password : values.password},
-        headers : {
-            accept : "*/*",
-        },
-    });
+    const onClickLogin = async (event) => {
+        event.preventDefault();
+        
+        setError(undefined);
 
-    useEffect(() => {
-        if (response !== undefined && response.username === values.username){
-
-            const authState = {
-                ...response,
-                password: values.password,
-            }
-
-            userLogin(authState);
+        try {
+            await dispatch(loginHandler(values));
             navigate("/", { replace: true });
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [response])
-
-    useEffect(() => {
-        if (apiError != null){
-            console.log("ApiError = ",apiError);
-        }
-    }, [apiError])
+        } catch (apiError) {
+            console.log(apiError);
+            setError(apiError.response.data.message);
+        }            
+    }
 
     const buttonEnabled = values.username && values.password;
+    const pendingApiCall = useApiProgress("post", "/api/1.0/auth");
 
     return(
         <div className="container">
             <form className="needs-validation">
                 <h1 className="text-center">Login</h1>
-                <Input name="username" label="Username" value={values.username} onChange={handleChange}  />
-                <Input name="password" label="Password" value={values.password} onChange={handleChange} type="password"/>
-                {apiError && <div className="alert alert-danger">{apiError.message}</div>}
+                <Input 
+                    name="username" 
+                    label="Username" 
+                    value={values.username} 
+                    onChange={handleChange}  
+                />
+                <Input 
+                    name="password" 
+                    label="Password" 
+                    value={values.password} 
+                    onChange={handleChange} 
+                    type="password"
+                />
+                {error && <div className="alert alert-danger">{error.message}</div>}
                 <div className="spacer5"></div>
-                {<ButtonWithProgress onClick={(event) => apiRequestCallback(event)} disabled={!buttonEnabled || loading} pendingApiCall={loading} text={"Login"}/>}
+                {<ButtonWithProgress 
+                    onClick={(event) => onClickLogin(event)} 
+                    disabled={!buttonEnabled || pendingApiCall} 
+                    pendingApiCall={pendingApiCall} 
+                    text={"Login"}
+                />}
             </form>
         </div>
     );

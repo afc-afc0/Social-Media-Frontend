@@ -1,10 +1,11 @@
 import * as ACTIONS from "../Constants";
+import { login } from "../../api/apiCalls"
 
-export const userLogin = (auth) => {
+export const userLogin = (authState) => {
     return (dispatch) => {
         dispatch({
             type: ACTIONS.LOGIN,
-            payload: auth
+            payload: authState
         })
     }
 }
@@ -16,3 +17,18 @@ export const userLogout = () => {
         })
     }
 }
+
+export const loginHandler = (credentials) => {
+    return async function (dispatch) {
+      const response = await login(credentials);
+
+      const authState = {
+        ...response.data,
+        password: credentials.password,
+      };
+  
+      dispatch(userLogin(authState));
+  
+      return response;
+    };
+  };
