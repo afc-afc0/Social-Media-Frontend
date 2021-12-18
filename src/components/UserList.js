@@ -1,68 +1,61 @@
 import React, { useState, useEffect } from 'react'
-import { useAxios } from '../shared/useAxios';
 import ButtonWithProgress from './buttonWithProgress';
 import UserListItem from './UserListItem';
+import { getUsers } from '../api/apiCalls';
+import { useApiProgress } from '../shared/useApiProgress';
 
 export default function UserList() {
     
-    const [page, setPage] = useState({content:[], size:3, number:0, last:undefined , first:undefined})
-    const [parameters, setParams] = useState({page:0, size:5});
+    const [page, setPage] = useState({content:[], size:3, number:0})
 
-    const {response, apiError, loading, apiRequestCallback} = useAxios({
-        method : "GET",
-        url : "/api/1.0/users",
-        headers : {
-            accept : "*/*",
-        },
-        params : {
-            page : parameters.page,
-            size : parameters.size
-        }
-    });
+    useEffect(() => {
+        loadUsers();
+    }, [])
     
-    useEffect(() => {
-        console.log("here");
-    },[page])
-
-    useEffect(() => {
-        if (response !== undefined){
-            setPage(page => ({
-                content: response.content,
-                size: response.size,
-                number: response.number,
-                last: response.last,
-                first: response.first
-            }));
-        }
-    }, [response])
-    
-    useEffect(() => {
-        if (apiError != null){
-            console.log("ApiError = ",apiError);
-        }
-    }, [apiError])
-
-    const onClickNext = (event) => {
+    const onClickNext = () => {
         const nextPage = page.number + 1;
-        setParams({
-            ...parameters,
-            page : nextPage
-        })
-        apiRequestCallback(event);
+        loadUsers(nextPage);
     }
+
+    const onClickPrevious = () => {
+        const prevPage = page.number - 1;
+        loadUsers(prevPage);
+    }
+
+    const loadUsers = async (pageNum) => {
+        try {
+            const response = await getUsers(pageNum, page.size);
+            setPage(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const pendingApiCall = useApiProgress("get", "/api/1.0/users?page");
+    const { content: users, last, first } = page;
 
     return (
         <div>
-            <ButtonWithProgress onClick={(event) => apiRequestCallback(event)} disabled={loading} pendingApiCall={loading} text={"Get Users"}/>
+            <ButtonWithProgress onClick={() => loadUsers()} disabled={pendingApiCall} pendingApiCall={pendingApiCall} text={"Get Users"}/>
             <div className="card">
                 <h3 className="card-header text-center">Users</h3>
                 <div className="list-group-flush"> 
-                {page.content && page.content.map((user, index) => (
-                    <UserListItem key={user.username} user={user}></UserListItem>
-                ))}
+                    {users && users.map((user, index) => (
+                        <UserListItem key={user.username} user={user}/>
+                    ))}
+                    
                 </div>
-                <div>
-                    {page.last === false && <button className="btn btn-sm btn-light" onClick={(event) => onClickNext(event)}>Next</button>}
+                <div>   
+                    {first === false && (
+                        <button className="btn btn-sm btn-secondary" onClick={onClickPrevious}>
+                            Previous
+                        </button>
+                    )}
+                    {last === false && (
+                        <button className="btn btn-sm btn-secondary float-end" onClick={onClickNext}>
+                            Next
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
