@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import UserListItem from './UserListItem';
 import { getUsers } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
+import Spinner from './spinner';
 
 export default function UserList() {
     
@@ -12,6 +13,7 @@ export default function UserList() {
 
     useEffect(() => {
         loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
     const onClickNext = () => {
@@ -52,13 +54,7 @@ export default function UserList() {
     )
 
     if (pendingApiCall) {
-        actionDiv = (
-            <div className="d-flex justify-content-center">
-                <div className="spinner-border text-black-50">
-                    <span className="sr-only" />
-                </div>
-            </div>
-        )
+        actionDiv = <Spinner />
     }
 
     return (
