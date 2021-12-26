@@ -8,7 +8,6 @@ export const useApiProgress = (apiMethod, apiPath, strictPath) => {
       let requestInterceptor, responseInterceptor;
   
       const updateApiCallFor = (method, url, inProgress) => {
-
         if (method !== apiMethod) {
           return;
         }
@@ -55,5 +54,6 @@ export const useApiProgress = (apiMethod, apiPath, strictPath) => {
       };
     }, [apiPath, apiMethod, strictPath]);
   
+    // console.log(pendingApiCall);
     return pendingApiCall;
   };

@@ -12,14 +12,16 @@ import ButtonWithProgress from './buttonWithProgress';
 const ProfileCard = (props) => {
     const [inEditMode, setInEditMode] = useState(false);
     const [updatedDisplayName, setUpdatedDisplayName] = useState();
+    
     const [user, setUser] = useState({}); 
     const [editable, setEditable] = useState(false);
 
-    const state = useSelector((state) => state);
-    const loggedInUsername = state.user.username;
-
     const { username: pathUsername } = useParams();
-    const { username, displayName, image } = user;
+    const { username: loggedInUsername } = useSelector((store) => ({
+        username: store.user.username,
+    }));
+
+    const [newImage, setNewImage] = useState();
 
 
     useEffect(() => {
@@ -27,12 +29,15 @@ const ProfileCard = (props) => {
     }, [props.user])
 
     useEffect(() => {
-        setEditable(pathUsername === loggedInUsername)
+        setEditable(pathUsername === loggedInUsername);
     }, [pathUsername, loggedInUsername])
+
+    const { username, displayName, image } = user;
 
     useEffect(() => {
         if(!inEditMode){
             setUpdatedDisplayName(undefined);
+            setNewImage(undefined);
         } else { 
             setUpdatedDisplayName(displayName);
         }
@@ -52,38 +57,57 @@ const ProfileCard = (props) => {
         }
     }
 
-    const pendingApiCall = useApiProgress('put', 'api/1.0/users/' + username, true);
+    const onChangeFile = (event) => {
+        const file = event.target.files[0];
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+            setNewImage(fileReader.result);
+        };
+        fileReader.readAsDataURL(file);
+    }
+
+    const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + username);
 
     return (
         <div className="card text-center">
             <div className="card-header ">
-                <ProfileImageWithDefault className="rounded-circle shadow"  width="260" height="200" alt={`${username}`} image={image}></ProfileImageWithDefault>
+                <ProfileImageWithDefault 
+                    className="rounded-circle shadow"  
+                    width="200" 
+                    height="200" 
+                    alt={`${username}`} 
+                    image={image}
+                    tempImage={newImage}    
+                >
+                </ProfileImageWithDefault>
             </div>
             <div className="card-body">
-                {!inEditMode && 
-                    (
-                    <div>
+                {!inEditMode && (
+                    <>
                         <h3>
                             {displayName}@{username} 
                         </h3>
-                        { editable &&
+                        {editable && (
                             <button className="btn btn-success d-inline-flex" onClick={() => setInEditMode(true)}>
-                                <span className="material-icons">
-                                    edit
-                                </span>Edit
+                                <span className="material-icons">edit</span>
+                                Edit
                             </button>
-                        }
-                    </div>
-                    )
-                }
-                {inEditMode && 
-                    (
+                        )}
+                    </>
+                )}
+                {inEditMode && (
                     <div>
-                        <Input 
+                        <Input
                             label="Change Display Name" 
                             defaultValue={displayName} 
-                            onChange={(event) => setUpdatedDisplayName(event.target.value)}>
-                        </Input>
+                            onChange={(event) => setUpdatedDisplayName(event.target.value)}
+                        />
+                        <input 
+                            type="file"
+                            onChange={onChangeFile}
+                        >
+
+                        </input>
                         <div>
                             <ButtonWithProgress
                                 className="btn btn-secondary d-inline-flex" 
@@ -91,21 +115,21 @@ const ProfileCard = (props) => {
                                 disabled={pendingApiCall}
                                 pendingApiCall={pendingApiCall}
                                 text={
-                                        <>
-                                            <span className="material-icons">save</span>
-                                            Save
-                                        </>
+                                    <>
+                                        <span className="material-icons">save</span>
+                                        Save
+                                    </>
                                 }   
                             />
-                            <button className="btn btn-danger d-inline-flex ml-1" onClick={() => setInEditMode(false)} disabled={pendingApiCall}>
-                                <span className="material-icons">close</span>
+                            <button className="btn btn-danger d-inline-flex ml-1" 
+                            onClick={() => setInEditMode(false)} 
+                            disabled={pendingApiCall}>
+                                <span className="material-icons">cancel</span>
                                 Cancel
                             </button>
-                            
                         </div>
                     </div>
-                    )
-                }
+                )}
             </div>
         </div>
     )

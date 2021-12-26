@@ -12,7 +12,7 @@ const UserPage = () => {
     
     const { username } = useParams();
 
-    const pendingApiCall = useApiProgress("get", "/api/1.0/users/" + username, true);
+    const pendingApiCall = useApiProgress("get", "/api/1.0/users/" + username);
 
     useEffect(() => {
         setNotFound(false);
