@@ -17,6 +17,11 @@ const reducer = (state = defaultState, action) => {
             };
         case ACTIONS.LOGOUT:
             return defaultState;
+        case ACTIONS.UPDATE_SUCCESS:
+            return {
+                ...state,
+                ...action.payload
+            }
         default:
             return state;
     }

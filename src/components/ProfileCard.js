@@ -1,12 +1,13 @@
 import React from 'react'
 import Input from './input';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { updateUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
 import ButtonWithProgress from './buttonWithProgress';
+import { updateSuccess } from '../redux/action-creators';
 
 
 const ProfileCard = (props) => {
@@ -22,6 +23,9 @@ const ProfileCard = (props) => {
     }));
 
     const [newImage, setNewImage] = useState();
+    const [validationErrors, setValidationErrors] = useState({});
+    const dispatch = useDispatch();
+
 
 
     useEffect(() => {
@@ -31,6 +35,24 @@ const ProfileCard = (props) => {
     useEffect(() => {
         setEditable(pathUsername === loggedInUsername);
     }, [pathUsername, loggedInUsername])
+
+    useEffect(() => {
+        setValidationErrors((prevValidationErrors) => {
+            return {
+                ...prevValidationErrors,
+                displayName : undefined,
+            }
+        }); 
+    }, [updatedDisplayName])
+
+    useEffect(() => {
+        setValidationErrors((prevValidationErrors) => {
+            return {
+                ...prevValidationErrors,
+                image : undefined,
+            }
+        }); 
+    }, [newImage])
 
     const { username, displayName, image } = user;
 
@@ -44,20 +66,32 @@ const ProfileCard = (props) => {
     }, [inEditMode, displayName])
 
     const onClickSave = async () => {
-        const body = {
-            displayName: updatedDisplayName
+
+        let image;
+        if (newImage) {
+            image = newImage.split(',')[1];
         }
+
+        const body = {
+            displayName: updatedDisplayName,
+            image: image
+        };
 
         try {
             const response = await updateUser(username, body);
             setInEditMode(false);
             setUser(response.data);
-        } catch (error) {
-
+            dispatch(updateSuccess(response.data));
+        } catch (error) { 
+            setValidationErrors(error.response.data.validationErrors);
         }
     }
 
     const onChangeFile = (event) => {
+        if (event.target.files.length < 1) {
+            return;
+        }
+
         const file = event.target.files[0];
         const fileReader = new FileReader();
         fileReader.onloadend = () => {
@@ -67,6 +101,7 @@ const ProfileCard = (props) => {
     }
 
     const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + username);
+    const { displayName : displayNameError, image : imageError} = validationErrors; 
 
     return (
         <div className="card text-center">
@@ -75,11 +110,10 @@ const ProfileCard = (props) => {
                     className="rounded-circle shadow"  
                     width="200" 
                     height="200" 
-                    alt={`${username}`} 
+                    alt={`${username} profile`} 
                     image={image}
-                    tempImage={newImage}    
-                >
-                </ProfileImageWithDefault>
+                    tempimage={newImage}
+                />
             </div>
             <div className="card-body">
                 {!inEditMode && (
@@ -101,13 +135,13 @@ const ProfileCard = (props) => {
                             label="Change Display Name" 
                             defaultValue={displayName} 
                             onChange={(event) => setUpdatedDisplayName(event.target.value)}
+                            error={displayNameError}
                         />
-                        <input 
+                        <Input 
                             type="file"
                             onChange={onChangeFile}
-                        >
-
-                        </input>
+                            error={imageError}
+                        />
                         <div>
                             <ButtonWithProgress
                                 className="btn btn-secondary d-inline-flex" 

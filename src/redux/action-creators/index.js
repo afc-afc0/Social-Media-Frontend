@@ -2,19 +2,15 @@ import * as ACTIONS from "../Constants";
 import { login, signup } from "../../api/apiCalls"
 
 export const userLogin = (authState) => {
-    return (dispatch) => {
-        dispatch({
-            type: ACTIONS.LOGIN,
-            payload: authState
-        })
+    return {
+      type: ACTIONS.LOGIN,
+      payload: authState  
     }
 }
 
 export const userLogout = () => {
-    return (dispatch) => {
-        dispatch({
-            type: ACTIONS.LOGOUT
-        })
+    return {
+      type: ACTIONS.LOGOUT
     }
 }
 
@@ -32,10 +28,19 @@ export const loginHandler = (credentials) => {
     };
   };
 
-  export const signupHandler = (user) => {
-    return async function (dispatch) {
-      const response = await signup(user);
-      await dispatch(loginHandler(user));
-      return response;
-    };
+export const signupHandler = (user) => {
+  return async function (dispatch) {
+    const response = await signup(user);
+    await dispatch(loginHandler(user));
+    return response;
   };
+};
+
+export const updateSuccess = ({displayName, image}) => {
+  return  {
+    type: ACTIONS.UPDATE_SUCCESS,
+    payload : {
+      displayName, image
+    }
+  }
+}
