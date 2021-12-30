@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { getUser } from '../api/apiCalls';
 import { useParams } from 'react-router';
 import { useApiProgress } from '../shared/useApiProgress';
-import Spinner from '../components/spinner';
+import Spinner from '../components/Spinner';
 
 const UserPage = () => {
     const [user, setUser] = useState({});

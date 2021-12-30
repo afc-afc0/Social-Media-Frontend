@@ -32,3 +32,8 @@ export const updateUser = (username, body) => {
 export const postUserPost = (post) => {
     return axios.post("/api/1.0/posts", post);
 }
+
+export const getFeed = (page = 0) => {
+    console.log(page);
+    return axios.get("/api/1.0/posts?page="+page);
+}

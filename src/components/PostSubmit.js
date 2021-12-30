@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { postUserPost } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
-import ButtonWithProgress from './buttonWithProgress';
+import ButtonWithProgress from './ButtonWithProgress';
 
 const PostSubmit = () => {
     const [focused, setFocused] = useState(false);

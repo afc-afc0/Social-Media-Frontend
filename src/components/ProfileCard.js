@@ -1,12 +1,12 @@
 import React from 'react'
-import Input from './input';
+import Input from './Input';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { updateUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
-import ButtonWithProgress from './buttonWithProgress';
+import ButtonWithProgress from './ButtonWithProgress';
 import { updateSuccess } from '../redux/action-creators';
 
 

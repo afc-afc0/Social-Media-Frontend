@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import UserListItem from './UserListItem';
 import { getUsers } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
-import Spinner from './spinner';
+import Spinner from './Spinner';
 
 export default function UserList() {
     

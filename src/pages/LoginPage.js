@@ -1,6 +1,6 @@
 import React from "react";
-import Input from "../components/input";
-import ButtonWithProgress from "../components/buttonWithProgress";
+import Input from "../components/Input";
+import ButtonWithProgress from "../components/ButtonWithProgress";
 import { useInput } from "../shared/useInput";
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react'
