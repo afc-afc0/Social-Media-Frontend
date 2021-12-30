@@ -2,12 +2,17 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import { getFeed } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
+import { useParams } from 'react-router';
 import PostView from './PostView';
 import Spinner from "./Spinner";
 
 const Feed = () => {
     const [page, setPage] = useState({content: [], last: true, number: 0});
-    const pendingApiCall = useApiProgress("get", "/api/1.0/posts");
+    const { username } = useParams();
+
+    const path = username ? `/api/1.0/users/${username}/posts?page=` : "/api/1.0/posts?page=";
+    const pendingApiCall = useApiProgress("get", path);
+
 
     useEffect(() => {
         loadFeed();
@@ -15,7 +20,7 @@ const Feed = () => {
 
     const loadFeed = async (page) => {
         try {
-            const response = await getFeed(page);
+            const response = await getFeed(username, page);
             setPage(previousPage => ({
                 ...response.data,
                 content: [...previousPage.content, ...response.data.content]
