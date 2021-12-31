@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import { getFeed, getOldPosts } from '../api/apiCalls';
+import { getFeed, getOldPosts, getNewPostCount } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
 import { useParams } from 'react-router';
 import PostView from './PostView';
@@ -8,19 +8,37 @@ import Spinner from "./Spinner";
 
 const Feed = () => {
     const [page, setPage] = useState({content: [], last: true, number: 0});
+    const [newPostCount, setNewPostCount] = useState(0); 
     const { username } = useParams();
     
     const path = username ? `/api/1.0/users/${username}/posts?page=` : "/api/1.0/posts?page=";
     const initialFeedLoadProcess = useApiProgress("get", path);
 
+    let firstPostId = 0;
     let lastPostId = 0;
     if (page.content.length > 0){
+        firstPostId = page.content[0].id;
+
         const lastPostIndex = page.content.length - 1;
         lastPostId = page.content[lastPostIndex].id;
     }
 
     const oldPostPath = username ? `/api/1.0/users/${username}/posts/${lastPostId}` : `/api/1.0/posts/${lastPostId}`;
     const loadOldPostsProgress = useApiProgress("get", oldPostPath, true);
+
+    useEffect(() => {
+        const getCount = async () => {
+            const response = await getNewPostCount(firstPostId);
+            setNewPostCount(response.data.count);
+        } 
+        let looper = setInterval(() => {
+            getCount();
+        }, 10000);
+
+        return () => {
+            clearInterval(looper);
+        }
+    },[firstPostId])
 
     useEffect(() => {
         const loadFeed = async (page) => {
@@ -57,6 +75,9 @@ const Feed = () => {
 
     return (
         <div>
+            {newPostCount > 0 &&
+                <div className="alert alert-secondary text-center mb-1">{"There are new posts"}</div>
+            }
             {content.map(post => {
                 return <PostView key={post.id} post={post} />
             })}
