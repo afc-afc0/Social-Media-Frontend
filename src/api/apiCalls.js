@@ -37,3 +37,10 @@ export const getFeed = (username, page = 0) => {
     const path = username ? `/api/1.0/users/${username}/posts?page=` : "/api/1.0/posts?page=";
     return axios.get(path + page);
 }
+
+export const getOldPosts = (id, username) => {
+    console.log("id is = ", id);
+    const path = username ? `/api/1.0/users/${username}/posts/${id}` : `/api/1.0/posts/${id}`;
+    console.log("path", path);
+    return axios.get(path);
+} 
