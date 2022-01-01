@@ -39,12 +39,15 @@ export const getFeed = (username, page = 0) => {
 }
 
 export const getOldPosts = (id, username) => {
-    console.log("id is = ", id);
     const path = username ? `/api/1.0/users/${username}/posts/${id}` : `/api/1.0/posts/${id}`;
-    console.log("path", path);
     return axios.get(path);
 } 
 
-export const getNewPostCount = (id) => {
-    return axios.get(`/api/1.0/posts/${id}?count=true`);
+export const getNewPostCount = (id, username) => {
+    const path = username ? `/api/1.0/users/${username}/posts/${id}?count=true` : `/api/1.0/posts/${id}?count=true`;
+    return axios.get(path);
+}
+
+export const getNewPosts = (id) => {
+    return axios.get(`/api/1.0/posts/${id}?direction=after`);
 }

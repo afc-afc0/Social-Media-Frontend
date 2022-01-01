@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import { getFeed, getOldPosts, getNewPostCount } from '../api/apiCalls';
+import { getFeed, getOldPosts, getNewPostCount, getNewPosts } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
 import { useParams } from 'react-router';
 import PostView from './PostView';
@@ -25,20 +25,19 @@ const Feed = () => {
 
     const oldPostPath = username ? `/api/1.0/users/${username}/posts/${lastPostId}` : `/api/1.0/posts/${lastPostId}`;
     const loadOldPostsProgress = useApiProgress("get", oldPostPath, true);
+    const loadNewPostsProgress = useApiProgress("get", `/api/1.0/posts/${firstPostId}?direction=after`, true);
 
     useEffect(() => {
         const getCount = async () => {
-            const response = await getNewPostCount(firstPostId);
+            const response = await getNewPostCount(firstPostId, username);
             setNewPostCount(response.data.count);
         } 
-        let looper = setInterval(() => {
-            getCount();
-        }, 10000);
+        let looper = setInterval(getCount, 3000);
 
-        return () => {
+        return function cleanup() {
             clearInterval(looper);
         }
-    },[firstPostId])
+    },[firstPostId, username])
 
     useEffect(() => {
         const loadFeed = async (page) => {
@@ -67,6 +66,19 @@ const Feed = () => {
         }
     }
 
+    const loadNewPosts = async () => {
+        try {
+            const response = await getNewPosts(firstPostId);
+            setPage(previousPage => ({
+                ...previousPage,
+                content: [...response.data, ...previousPage.content]
+            }));
+            setNewPostCount(0);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const { content, last } = page;
 
     if (content.length === 0) {
@@ -76,7 +88,12 @@ const Feed = () => {
     return (
         <div>
             {newPostCount > 0 &&
-                <div className="alert alert-secondary text-center mb-1">{"There are new posts"}</div>
+                <div className="alert alert-secondary text-center mb-1"
+                    style={{ cursor: loadNewPostsProgress ? "not-allowed" : "pointer"}} 
+                    onClick={loadNewPostsProgress ? () => {} : loadNewPosts}
+                >
+                    {loadNewPostsProgress ? <Spinner /> : "There are new posts"}
+                </div>
             }
             {content.map(post => {
                 return <PostView key={post.id} post={post} />
@@ -84,7 +101,7 @@ const Feed = () => {
             {!last && (
                 <div className="alert alert-secondary text-center" 
                     style={{ cursor: loadOldPostsProgress ? "not-allowed" : "pointer"}} 
-                    onClick={loadOldPostsProgress ? () => {} : () => loadOldPosts()}
+                    onClick={loadOldPostsProgress ? () => {} : loadOldPosts}
                 >
                     {loadOldPostsProgress ? <Spinner/> : "Load older posts"}
                 </div>
