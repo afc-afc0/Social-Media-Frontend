@@ -48,6 +48,11 @@ export const getNewPostCount = (id, username) => {
     return axios.get(path);
 }
 
-export const getNewPosts = (id) => {
-    return axios.get(`/api/1.0/posts/${id}?direction=after`);
+export const getNewPosts = (id, username) => {
+    const path = username ? `/api/1.0/users/${username}/posts/${id}?direction=after` : `/api/1.0/posts/${id}?direction=after`;
+    return axios.get(path);
+}
+
+export const postAttachment = (attachment) => {
+    return axios.post(`/api/1.0/post-attachments`, attachment);
 }

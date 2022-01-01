@@ -25,7 +25,10 @@ const Feed = () => {
 
     const oldPostPath = username ? `/api/1.0/users/${username}/posts/${lastPostId}` : `/api/1.0/posts/${lastPostId}`;
     const loadOldPostsProgress = useApiProgress("get", oldPostPath, true);
-    const loadNewPostsProgress = useApiProgress("get", `/api/1.0/posts/${firstPostId}?direction=after`, true);
+    
+    const newPostPath = username ? `/api/1.0/users/${username}/posts/${firstPostId}?direction=after` : `/api/1.0/posts/${firstPostId}?direction=after`;
+    const loadNewPostsProgress = useApiProgress("get", newPostPath, true);
+
 
     useEffect(() => {
         const getCount = async () => {
@@ -68,9 +71,10 @@ const Feed = () => {
 
     const loadNewPosts = async () => {
         try {
-            const response = await getNewPosts(firstPostId);
+            const response = await getNewPosts(firstPostId, username);
+            console.log(response);
             setPage(previousPage => ({
-                ...previousPage,
+                ...previousPage.content,
                 content: [...response.data, ...previousPage.content]
             }));
             setNewPostCount(0);
