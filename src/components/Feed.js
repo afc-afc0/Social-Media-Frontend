@@ -1,10 +1,11 @@
 import React from 'react'
+import PostView from './PostView';
+import Spinner from "./Spinner";
 import { useState, useEffect } from "react";
 import { getFeed, getOldPosts, getNewPostCount, getNewPosts } from '../api/apiCalls';
 import { useApiProgress } from '../shared/useApiProgress';
 import { useParams } from 'react-router';
-import PostView from './PostView';
-import Spinner from "./Spinner";
+
 
 const Feed = () => {
     const [page, setPage] = useState({content: [], last: true, number: 0});
@@ -83,6 +84,13 @@ const Feed = () => {
         }
     }
 
+    const onDeletePostSuccess = (id) => {
+        setPage(previousPage => ({
+            ...previousPage.content,
+            content: previousPage.content.filter((post) => post.id !== id)
+        }));
+    }
+
     const { content, last } = page;
 
     if (content.length === 0) {
@@ -100,7 +108,7 @@ const Feed = () => {
                 </div>
             }
             {content.map(post => {
-                return <PostView key={post.id} post={post} />
+                return <PostView key={post.id} post={post} onDeletePost={onDeletePostSuccess} />
             })}
             {!last && (
                 <div className="alert alert-secondary text-center" 

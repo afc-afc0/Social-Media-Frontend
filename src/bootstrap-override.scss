@@ -3,3 +3,12 @@ $primary: rgb(27, 235, 235);
 
 @import '~bootstrap/scss/bootstrap.scss';
 
+
+.btn-delete-link {
+    color:rgba(0, 255, 64, 0.438);
+    padding: 0;
+}
+
+.btn-delete-link:hover {
+    color: $danger;
+}

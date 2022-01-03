@@ -13,6 +13,7 @@ const PostSubmit = () => {
     const [post, setPost] = useState("");
     const [errors, setErrors] = useState({});  
     const [newImage, setNewImage] = useState(); 
+    const [attachmentId, setAttachmentId] = useState();
 
     const pendingApiCall= useApiProgress("post", "/api/1.0/posts", true);
     const pendingFileUpload = useApiProgress("post", "/api/1.0/post-attachments", true);
@@ -22,6 +23,7 @@ const PostSubmit = () => {
             setPost(""); 
             setErrors({});   
             setNewImage();
+            setAttachmentId();
         }
     }, [focused])
 
@@ -31,7 +33,8 @@ const PostSubmit = () => {
 
     const onClickSubmit = async () => {
         const body = {
-            content : post
+            content : post,
+            attachmentId: attachmentId
         };
 
         try {
@@ -61,7 +64,8 @@ const PostSubmit = () => {
         attachment.append("file", file);
         
         try {
-            await postAttachment(attachment);
+            const response = await postAttachment(attachment);
+            setAttachmentId(response.data.id);
         } catch (error) {
             console.log(error);
         }
