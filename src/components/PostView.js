@@ -77,6 +77,8 @@ const PostView = (props) => {
                 onClickCancel={onClickCancel}
                 onClickOk={onClickDelete}
                 pendingApiCall={pendingApiCall}
+                title="Delete Post"
+                okButtonText="Delete Post"
                 message={
                     <div>
                         <strong>Are you sure to delete this post?</strong>
